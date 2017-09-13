@@ -31,17 +31,9 @@ class ImageFiles(metaclass=ABCMeta):
         """
         The base class with the functionality used by all Mushaf
         to generate the train, validate, and test images
-
-        :param output_folder: define the output_folder
         """
         self._group_id = None
-
-        # Create a shuffled group of image file numbers
         self._shuffled_image_groups = []
-        for image_group in self.image_groups:
-            shuffled_image_group = list(range(image_group[0], image_group[1]))
-            shuffle(shuffled_image_group)
-            self._shuffled_image_groups.append(shuffled_image_group)
 
         # Setup the stats for this Mushaf
         if 'summary' not in ImageFiles.stats:
@@ -119,6 +111,18 @@ class ImageFiles(metaclass=ABCMeta):
 
         return self._group_id
 
+    def generate_group(self, shuffle_group=True):
+
+        # Always reset shuffled image groups
+        self._shuffled_image_groups = []
+
+        # Iterate over image groups and generate image groups (shuffled if needed)
+        for image_group in self.image_groups:
+            shuffled_image_group = list(range(image_group[0], image_group[1]))
+            if shuffle_group:
+                shuffle(shuffled_image_group)
+            self._shuffled_image_groups.append(shuffled_image_group)
+
     #################################
     #
     # Static methods
@@ -158,16 +162,11 @@ class ImageFiles(metaclass=ABCMeta):
         ImageFiles._mushafs.append(mushaf)
 
     @staticmethod
-    def generate_groups(shuffle_groups=True):
+    def generate_groups(shuffle_group=True):
 
         # Iterate over mushafs and generate groups (shuffled or not)
         for mushaf in ImageFiles._mushafs:
-            mushaf._shuffled_image_groups = []
-            for image_group in mushaf.image_groups:
-                shuffled_image_group = list(range(image_group[0], image_group[1]))
-                if shuffle_groups:
-                    shuffle(shuffled_image_group)
-                mushaf._shuffled_image_groups.append(shuffled_image_group)
+            mushaf.generate_group(shuffle_group)
 
     @staticmethod
     def all_copy_list(out_path_suffix, count=1, new_shuffle_groups=False,
@@ -202,7 +201,7 @@ class ImageFiles(metaclass=ABCMeta):
 
         # Generate new shuffle groups if needed
         if new_shuffle_groups:
-            ImageFiles.generate_groups(shuffle_groups=True)
+            ImageFiles.generate_groups(shuffle_group=True)
 
         # Loop over all mushafs registered
         for mushaf in ImageFiles._mushafs:

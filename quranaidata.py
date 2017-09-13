@@ -19,6 +19,8 @@ if __name__ == '__main__':
     ImageFiles.add_mushaf(urdu15)
     ImageFiles.add_mushaf(warsh)
 
+    ImageFiles.generate_groups(shuffle_group=True)
+
     validate_list = ImageFiles.all_copy_list('validate', count=30)
 
     print(validate_list)
