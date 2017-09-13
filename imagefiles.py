@@ -169,13 +169,13 @@ class ImageFiles(metaclass=ABCMeta):
             mushaf.generate_group(shuffle_group)
 
     @staticmethod
-    def all_copy_list(out_path_suffix, count=1, new_shuffle_groups=False,
+    def all_copy_list(out_path_suffix, count=1, shuffle_group=True,
                       generate_id=True, round_up=True):
 
         """
         Generate the copy list for all mushafs added to ImageFiles
 
-        :param new_shuffle_groups:
+        :param shuffle_group:
         :param round_up: True=round up, False don't round
         :param out_path_suffix:
         :param count:
@@ -200,8 +200,7 @@ class ImageFiles(metaclass=ABCMeta):
         count_per_mushaf = (count_per_mushaf + reminder) * groups_count
 
         # Generate new shuffle groups if needed
-        if new_shuffle_groups:
-            ImageFiles.generate_groups(shuffle_group=True)
+        ImageFiles.generate_groups(shuffle_group)
 
         # Loop over all mushafs registered
         for mushaf in ImageFiles._mushafs:
